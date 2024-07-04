@@ -1,27 +1,15 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Car } from './interfaces/car.interface';
 import { v4 as uuid } from 'uuid';
 import { CreateCarDto, UpdateCarDto } from './dto';
 
 @Injectable()
 export class CarsService {
-  private cars: Car[] = [
-    {
-      id: uuid(),
-      brand: 'toyota',
-      model: 'corolla',
-    },
-    {
-      id: uuid(),
-      brand: 'honda',
-      model: 'civic',
-    },
-    {
-      id: uuid(),
-      brand: 'jeep',
-      model: 'cherokee',
-    },
-  ];
+  private cars: Car[] = [];
 
   findAll() {
     console.log(this.cars);
@@ -46,16 +34,15 @@ export class CarsService {
     return car;
   }
 
-  update(id: string, updateCarDto: UpdateCarDto){
-
+  update(id: string, updateCarDto: UpdateCarDto) {
     let carDB = this.findOneById(id);
 
-    if(updateCarDto.id && updateCarDto.id !== id){
+    if (updateCarDto.id && updateCarDto.id !== id) {
       throw new BadRequestException(`Car id is not valid`);
     }
 
-    this.cars = this.cars.map(car => {
-      if(car.id === id){
+    this.cars = this.cars.map((car) => {
+      if (car.id === id) {
         carDB = {
           ...carDB,
           ...updateCarDto,
@@ -75,7 +62,11 @@ export class CarsService {
       throw new NotFoundException();
     }
 
-    this.cars = this.cars.filter(car => car.id !== id);
+    this.cars = this.cars.filter((car) => car.id !== id);
     return carDB;
+  }
+
+  fillCarsWithSeedData(cars: Car[]) {
+    this.cars = cars;
   }
 }
